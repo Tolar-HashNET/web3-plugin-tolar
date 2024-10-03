@@ -1,0 +1,10 @@
+.tsbuildinfo
+.npm
+.yarn-integrity
+
+lib/
+node_modules/
+
+.idea/
+dist
+

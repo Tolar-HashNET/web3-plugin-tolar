@@ -1,15 +1,14 @@
 {
 	"compilerOptions": {
-		"baseUrl": "./",
 		"resolveJsonModule": true,
 		"forceConsistentCasingInFileNames": true,
 		"target": "es2020",
-		"module": "commonjs",
+		"module": "es2020",
 		"declaration": true,
 		"moduleResolution": "node",
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitReturns": true,
-		"noUnusedLocals": true,
+		"noUnusedLocals": false,
 		"noUnusedParameters": false,
 		"pretty": true,
 		"removeComments": true,
@@ -17,9 +16,10 @@
 		"declarationMap": true,
 		"strict": true,
 		"strictNullChecks": true,
-		"outDir": "lib",
+		"outDir": "dist",
 		"esModuleInterop": true,
+		"allowJs": true
 	},
-	"include": ["src", "test"],
+	"include": ["src"],
 	"exclude": ["node_modules"]
 }

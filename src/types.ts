@@ -1,12 +1,4 @@
-import type { HexString, HexString32Bytes, HexStringBytes } from "web3";
-import { utils } from "web3";
-
-import {
-  isTolAddressValid,
-  toEthAddress,
-  toTolHexAddress,
-  toTolHexAddressFromPublicKey,
-} from "./utils";
+import type { HexString, HexString32Bytes } from "web3";
 
 export enum NetworkId {
   Local = 0,
@@ -15,99 +7,59 @@ export enum NetworkId {
   Stagenet = 3,
 }
 
-export type Address = HexString;
-export type Hash = HexString32Bytes;
+export type StrHexAddress = HexString;
+export type StrHexHash = HexString32Bytes;
 export type AttoTol = bigint;
 
-export class TolAddress {
-  public readonly raw: Uint8Array;
-
-  public constructor(address: Uint8Array | Address) {
-    const valid = isTolAddressValid(address);
-    if (valid.length !== 0) {
-      throw new Error(valid);
-    }
-
-    this.raw =
-      typeof address === "string" ? utils.hexToBytes(address) : address;
-  }
-
-  public static fromEthAddress(ethAddress: HexString | Uint8Array): TolAddress {
-    if (typeof ethAddress !== "string") {
-      ethAddress = utils.bytesToHex(ethAddress);
-    }
-
-    return new TolAddress(toTolHexAddress(ethAddress));
-  }
-
-  public static fromPublicKey(ethAddress: HexString | Uint8Array): TolAddress {
-    return new TolAddress(toTolHexAddressFromPublicKey(ethAddress));
-  }
-
-  public toEthAddress(): HexString {
-    return toEthAddress(this.toString());
-  }
-
-  public equals(address: TolAddress): boolean {
-    return utils.uint8ArrayEquals(this.raw, address.raw);
-  }
-
-  public toString(): string {
-    return utils.bytesToHex(this.raw);
-  }
-
-  public isZero(): boolean {
-    return this.equals(ZERO_ADDRESS);
-  }
-}
-
-export const ZERO_STR_ADDRESS: Address =
+export const ZERO_HEX_ADDRESS: StrHexAddress =
   "0x54000000000000000000000000000000000000000023199e2b";
-export const ZERO_ADDRESS: TolAddress = new TolAddress(ZERO_STR_ADDRESS);
+export const INVALID_NONCE: bigint = BigInt(
+  "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+);
 export const MIN_GAS: AttoTol = 21_000n;
 export const MIN_GAS_PRICE: AttoTol = 1n;
 
-export type Block = {
+export type RpcBlock = {
   blockIndex: number;
-  blockHash: Hash;
+  blockHash: StrHexHash;
   confirmationTimestamp: Date;
-  previousBlockHash: Hash;
-  transactionHashes: Hash[];
+  previousBlockHash: StrHexHash;
+  transactionHashes: StrHexHash[];
 };
 
-export type TxRequest = {
-  senderAddress: Address;
-  receiverAddress: Address;
+export type RpcTxRequest = {
+  senderAddress: StrHexAddress;
+  receiverAddress: StrHexAddress;
   amount: AttoTol;
   gas: AttoTol;
   gasPrice: AttoTol;
-  data: HexStringBytes;
+  data: HexString;
   nonce: bigint;
   networkId: NetworkId;
 };
 
-export type TryCallOutput = {
+export type RpcTryCallOutput = {
   output: HexString;
   excepted: boolean;
 };
 
-export type BalanceOutput = {
+export type RpcBalanceOutput = {
   balance: AttoTol;
   blockIndex: number;
 };
 
-export type BlockchainInfo = {
+export type RpcBlockchainInfo = {
   confirmedBlocksCount: number;
   totalBlocksCount: number;
   lastConfirmedBlockHash: HexString;
 };
 
-export type TxResponse = {
-  transactionHash: Hash;
-  blockHash: Hash;
+export type RpcTxResponse = {
+  transactionHash: StrHexHash;
+  blockHash: StrHexHash;
   transactionIndex: number;
-  senderAddress: Address;
-  receiverAddress: Address;
+  senderAddress: StrHexAddress;
+  receiverAddress: StrHexAddress;
   value: AttoTol;
   gas: AttoTol;
   gasPrice: AttoTol;
@@ -117,40 +69,40 @@ export type TxResponse = {
   confirmationTimestamp: Date;
   gasUsed: AttoTol;
   gasRefunded: AttoTol;
-  newAddress: Address;
+  newAddress: StrHexAddress;
   output: HexString;
   excepted: boolean;
   exception: number;
 };
 
-export type PastEvent = {
-  address: Address;
-  topic: Hash;
-  topicArg0: Hash;
-  topicArg1: Hash;
-  topicArg2: Hash;
-  data: HexStringBytes;
-  transactionHash: Hash;
-  blockHash: Hash;
+export type RpcPastEvent = {
+  address: StrHexAddress;
+  topic: StrHexHash;
+  topicArg0: StrHexHash;
+  topicArg1: StrHexHash;
+  topicArg2: StrHexHash;
+  data: HexString;
+  transactionHash: StrHexHash;
+  blockHash: StrHexHash;
   blockIndex: number;
 };
 
-export type LogEntry = {
-  address: Address;
-  topics: Hash[];
-  data: HexStringBytes;
+export type RpcLogEntry = {
+  address: StrHexAddress;
+  topics: StrHexHash[];
+  data: HexString;
 };
 
-export type TransactionReceipt = {
+export type RpcTransactionReceipt = {
   excepted: boolean;
-  blockHash: Hash;
+  blockHash: StrHexHash;
   blockIndex: number;
-  transactionHash: Hash;
+  transactionHash: StrHexHash;
   transactionIndex: number;
-  senderAddress: Address;
-  receiverAddress: Address;
-  newAddress: Address;
+  senderAddress: StrHexAddress;
+  receiverAddress: StrHexAddress;
+  newAddress: StrHexAddress;
   gasUsed: AttoTol;
-  logs: LogEntry[];
+  logs: RpcLogEntry[];
   exception: number;
 };
