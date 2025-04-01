@@ -19,4 +19,7 @@ tmp/
 logs/
 test/
 scripts/
+.yarn/
+examples/
+.idea/
 

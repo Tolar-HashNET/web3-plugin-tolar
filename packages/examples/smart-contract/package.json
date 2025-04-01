@@ -1,0 +1,20 @@
+{
+  "name": "smart-contract-example",
+  "description": "Tolar HashNet plugin example that shows how to work with smart contract",
+  "homepage": "https://github.com/Tolar-HashNET/web3-plugin-tolar/packages/examples/smart-contract#readme",
+  "bugs": {
+    "url": "https://github.com/Tolar-HashNET/web3-plugin-tolar/issues"
+  },
+  "scripts": {
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "build": "webpack",
+    "clean": "rimraf dist",
+    "dev": "webpack-dev-server --config=webpack.config.js"
+  },
+  "dependencies": {
+    "@tolar/web3-plugin-tolar": "workspace:^",
+    "ts-retry-promise": "^0.8.1",
+    "web3": ">= 4.0.3",
+    "web3-eth-accounts": ">=4.0.3"
+  }
+}

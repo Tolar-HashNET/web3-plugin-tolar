@@ -1,0 +1,19 @@
+{
+  "name": "tolar-send-signed-transaction-example",
+  "description": "Tolar HashNet plugin example that shows how to send signed transaction",
+  "homepage": "https://github.com/Tolar-HashNET/web3-plugin-tolar/packages/examples/send-signed-transaction#readme",
+  "bugs": {
+    "url": "https://github.com/Tolar-HashNET/web3-plugin-tolar/issues"
+  },
+  "scripts": {
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "build": "webpack",
+    "clean": "rimraf dist",
+    "dev": "webpack-dev-server --config=webpack.config.js"
+  },
+  "dependencies": {
+    "@tolar/web3-plugin-tolar": "workspace:^",
+    "web3": ">= 4.0.3",
+    "web3-eth-accounts": ">=4.0.3"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "tolar-wallet-send-transaction-example",
+  "description": "Tolar HashNet plugin example that shows how to send transaction using wallet",
+  "homepage": "https://github.com/Tolar-HashNET/web3-plugin-tolar/packages/examples/wallet-send-transaction#readme",
+  "bugs": {
+    "url": "https://github.com/Tolar-HashNET/web3-plugin-tolar/issues"
+  },
+  "scripts": {
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "build": "tsc -project tsconfig.json",
+    "clean": "rimraf dist",
+    "dev": "ts-node-dev --respawn ./src/index.ts"
+  },
+  "dependencies": {
+    "@tolar/web3-plugin-tolar": "workspace:^",
+    "ts-retry-promise": "^0.8.1",
+    "web3": ">= 4.0.3",
+    "web3-eth-accounts": ">=4.0.3"
+  }
+}

@@ -1,3 +1,6 @@
 module.exports = {
-    extends: "@chainsafe"
+    extends: "@chainsafe",
+    env:{
+        "jest": true
+    }
 }

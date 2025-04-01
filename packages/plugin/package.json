@@ -1,0 +1,47 @@
+{
+  "name": "@tolar/web3-plugin-tolar",
+  "version": "0.9.89",
+  "author": "tolar",
+  "homepage": "https://github.com/Tolar-HashNET/web3-plugin-tolar#readme",
+  "description": "Tolar HashNet plugin for web3.js with tolar specific rpc methods and account handling",
+  "bugs": {
+    "url": "https://github.com/Tolar-HashNET/web3-plugin-tolar/issues"
+  },
+  "keywords": [
+    "tolar",
+    "hashnet",
+    "web3",
+    "plugin",
+    "web3js",
+    "web3.js",
+    "blockchain"
+  ],
+  "contributors": [
+    {
+      "name": "Tolar",
+      "email": "info@tolar.io"
+    }
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Tolar-HashNET/web3-plugin-tolar.git"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf lib",
+    "test": "jest --config=./test/jest.config.js",
+    "publish_localy": "npm publish --registry http://0.0.0.0:4873/ --access public"
+  },
+  "dependencies": {
+    "@protobuf-ts/runtime": ">=2.9.4",
+    "ethereum-cryptography": "^2.1.2"
+  },
+  "peerDependencies": {
+    "web3": ">= 4.0.3",
+    "web3-eth-accounts": ">=4.0.3"
+  }
+}

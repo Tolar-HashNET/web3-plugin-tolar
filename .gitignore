@@ -4,5 +4,8 @@
 
 lib/
 node_modules/
+dist/
 
 .idea/
+
+.yarn
