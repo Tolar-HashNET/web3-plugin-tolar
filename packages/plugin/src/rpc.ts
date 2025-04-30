@@ -332,6 +332,28 @@ export async function getPastEvents(
   );
 }
 
+export async function getPastEventsByBlockRange(
+  requestManager: core.Web3RequestManager<TolarExecutionAPI>,
+  address: StrHexAddress,
+  topic: StrHexHash,
+  fromBlockIdx: number,
+  toBlockIdx: number,
+): Promise<RpcPastEvent[]> {
+  const rawPastEvents: RawPastEventsResponse = await requestManager.send({
+    method: "tol_getPastEventsFromBlocks",
+    params: [
+      removeHexPrefix(address),
+      removeHexPrefix(topic),
+      fromBlockIdx,
+      toBlockIdx,
+    ],
+  });
+
+  return rawPastEvents.past_events.map((rawPastEvents) =>
+    toPastEvent(rawPastEvents),
+  );
+}
+
 function toLogEntry(rawLogEntryObject: object): RpcLogEntry {
   const rawLogEntry = new Map(Object.entries(rawLogEntryObject));
   const res = {

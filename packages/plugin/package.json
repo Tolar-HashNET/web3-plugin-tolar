@@ -1,6 +1,6 @@
 {
   "name": "@tolar/web3-plugin-tolar",
-  "version": "0.9.89",
+  "version": "0.9.92",
   "author": "tolar",
   "homepage": "https://github.com/Tolar-HashNET/web3-plugin-tolar#readme",
   "description": "Tolar HashNet plugin for web3.js with tolar specific rpc methods and account handling",

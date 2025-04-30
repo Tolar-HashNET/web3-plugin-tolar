@@ -103,6 +103,21 @@ export class TolarPlugin extends Web3PluginBase<TolarExecutionAPI> {
     return _rpc.getPastEvents(this.requestManager, address, topic);
   }
 
+  public async getPastEventsByBlockRange(
+    address: StrHexAddress,
+    topic: StrHexHash,
+    fromBlockIdx: number,
+    toBlockIdx: number,
+  ): Promise<RpcPastEvent[]> {
+    return _rpc.getPastEventsByBlockRange(
+      this.requestManager,
+      address,
+      topic,
+      fromBlockIdx,
+      toBlockIdx,
+    );
+  }
+
   public async getTransactionReceipt(
     transactionHash: StrHexHash,
   ): Promise<RpcTransactionReceipt> {
