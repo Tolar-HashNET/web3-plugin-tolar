@@ -6,3 +6,4 @@ export * as converters from "./converters";
 export * as validator from "./validation";
 export * as cryptography from "./cryptography";
 export * as proto from "./tolar_proto";
+export * as utils from "./utils";

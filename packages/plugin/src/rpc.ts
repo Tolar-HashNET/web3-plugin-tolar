@@ -1,6 +1,13 @@
 import type { core, HexString } from "web3";
 
-import { toNetworkId } from "./converters";
+import {
+  toRpcBlock,
+  toNetworkId,
+  toRpcBalanceOutput,
+  toRpcTxResponse,
+  toRpcPastEvent,
+  toRpcTryCallOutput, toRpcTransactionReceipt
+} from "./converters";
 import type {
   RpcBlock,
   RpcTxRequest,
@@ -12,20 +19,11 @@ import type {
   RpcTxResponse,
   RpcPastEvent,
   AttoTol,
-  NetworkId,
   RpcTransactionReceipt,
-  RpcLogEntry,
   NetworkInfo,
   TolNum,
 } from "./types";
-
-function removeHexPrefix(value: HexString): string {
-  if (value.startsWith("0x") || value.startsWith("0X")) {
-    return value.slice(2);
-  }
-
-  return value;
-}
+import { appendHexPrefix, removeHexPrefix } from "./utils";
 
 function txRequestToParameters(txRequest: RpcTxRequest): (string | number)[] {
   return [
@@ -38,10 +36,6 @@ function txRequestToParameters(txRequest: RpcTxRequest): (string | number)[] {
     txRequest.nonce.toString(),
     txRequest.networkId,
   ];
-}
-
-function appendHexPrefix(value: HexString): string {
-  return `0x${value}`;
 }
 
 export interface TolarExecutionAPI {
@@ -79,28 +73,10 @@ export async function getBlockCount(
   });
 }
 
-function toBlock(rawBlockObj: object): RpcBlock {
-  const rawBlock = new Map(Object.entries(rawBlockObj));
-
-  return {
-    blockIndex: rawBlock.get("block_index") as number,
-    blockHash: appendHexPrefix(rawBlock.get("block_hash") as StrHexHash),
-    confirmationTimestamp: new Date(
-      rawBlock.get("confirmation_timestamp") as number,
-    ),
-    previousBlockHash: appendHexPrefix(
-      rawBlock.get("previous_block_hash") as StrHexHash,
-    ),
-    transactionHashes: (rawBlock.get("transaction_hashes") as StrHexHash[]).map(
-      appendHexPrefix,
-    ),
-  };
-}
-
 export async function getLatestBlock(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
 ): Promise<RpcBlock> {
-  return toBlock(
+  return toRpcBlock(
     await requestManager.send({
       method: "tol_getLatestBlock",
       params: [],
@@ -112,7 +88,7 @@ export async function getBlockByHash(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
   blockHash: StrHexHash,
 ): Promise<RpcBlock> {
-  return toBlock(
+  return toRpcBlock(
     await requestManager.send({
       method: "tol_getBlockByHash",
       params: [removeHexPrefix(blockHash)],
@@ -124,7 +100,7 @@ export async function getBlockByIndex(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
   blockIndex: number,
 ): Promise<RpcBlock> {
-  return toBlock(
+  return toRpcBlock(
     await requestManager.send({
       method: "tol_getBlockByIndex",
       params: [blockIndex],
@@ -142,19 +118,11 @@ export async function getGasEstimate(
   });
 }
 
-function toTryCallOutput(rawTryCallOutputObject: object): RpcTryCallOutput {
-  const rawTryCallOutput = new Map(Object.entries(rawTryCallOutputObject));
-  return {
-    output: appendHexPrefix(rawTryCallOutput.get("output") as string),
-    excepted: rawTryCallOutput.get("excepted") as boolean,
-  };
-}
-
 export async function tryCallTransaction(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
   txRequest: RpcTxRequest,
 ): Promise<RpcTryCallOutput> {
-  return toTryCallOutput(
+  return toRpcTryCallOutput(
     await requestManager.send({
       method: "tol_tryCallTransaction",
       params: txRequestToParameters(txRequest),
@@ -162,21 +130,12 @@ export async function tryCallTransaction(
   );
 }
 
-function toBalanceOutput(rawBalanceObj: object): RpcBalanceOutput {
-  const rawBalance = new Map(Object.entries(rawBalanceObj));
-
-  return {
-    balance: rawBalance.get("balance") as string,
-    blockIndex: rawBalance.get("block_index") as number,
-  };
-}
-
 export async function getBalance(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
   address: StrHexAddress,
   blockIndex: number,
 ): Promise<RpcBalanceOutput> {
-  return toBalanceOutput(
+  return toRpcBalanceOutput(
     await requestManager.send({
       method: "tol_getBalance",
       params: [removeHexPrefix(address), blockIndex],
@@ -188,7 +147,7 @@ export async function getLatestBalance(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
   address: StrHexAddress,
 ): Promise<RpcBalanceOutput> {
-  return toBalanceOutput(
+  return toRpcBalanceOutput(
     await requestManager.send({
       method: "tol_getLatestBalance",
       params: [removeHexPrefix(address)],
@@ -224,46 +183,11 @@ export async function getBlockchainInfo(
   };
 }
 
-function toTxResponse(rawTxResponseObj: object): RpcTxResponse {
-  const rawTxResponse = new Map(Object.entries(rawTxResponseObj));
-
-  return {
-    transactionHash: appendHexPrefix(
-      rawTxResponse.get("transaction_hash") as StrHexHash,
-    ),
-    blockHash: appendHexPrefix(rawTxResponse.get("block_hash") as StrHexHash),
-    transactionIndex: rawTxResponse.get("transaction_index") as number,
-    senderAddress: appendHexPrefix(
-      rawTxResponse.get("sender_address") as StrHexAddress,
-    ),
-    receiverAddress: appendHexPrefix(
-      rawTxResponse.get("receiver_address") as StrHexAddress,
-    ),
-    value: rawTxResponse.get("value") as AttoTol,
-    gas: rawTxResponse.get("gas") as AttoTol,
-    gasPrice: rawTxResponse.get("gas_price") as AttoTol,
-    data: appendHexPrefix(rawTxResponse.get("data") as HexString),
-    nonce: rawTxResponse.get("nonce") as TolNum,
-    networkId: rawTxResponse.get("network_id") as NetworkId,
-    confirmationTimestamp: new Date(
-      rawTxResponse.get("confirmation_timestamp") as number,
-    ),
-    gasUsed: rawTxResponse.get("gas_used") as string,
-    gasRefunded: rawTxResponse.get("gas_refunded") as string,
-    newAddress: appendHexPrefix(
-      rawTxResponse.get("new_address") as StrHexAddress,
-    ),
-    output: appendHexPrefix(rawTxResponse.get("output") as HexString),
-    excepted: rawTxResponse.get("excepted") as boolean,
-    exception: rawTxResponse.get("exception") as number,
-  };
-}
-
 export async function getTransaction(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
   transactionHash: StrHexHash,
 ): Promise<RpcTxResponse> {
-  return toTxResponse(
+  return toRpcTxResponse(
     await requestManager.send({
       method: "tol_getTransaction",
       params: [removeHexPrefix(transactionHash)],
@@ -285,37 +209,13 @@ export async function getTransactionList(
   });
 
   return rawTxResponses.transactions.map((rawTxResponse) =>
-    toTxResponse(rawTxResponse),
+    toRpcTxResponse(rawTxResponse),
   );
 }
 
 type RawPastEventsResponse = {
   past_events: object[];
 };
-
-function toPastEvent(rawPastEventObj: object): RpcPastEvent {
-  const rawPastEvent = new Map(Object.entries(rawPastEventObj));
-
-  return {
-    address: appendHexPrefix(rawPastEvent.get("address") as StrHexAddress),
-    topic: appendHexPrefix(rawPastEvent.get("topic") as StrHexHash),
-    topicArg0: appendHexPrefix(
-      (rawPastEvent.get("topic_arg_0") ?? "") as StrHexHash,
-    ),
-    topicArg1: appendHexPrefix(
-      (rawPastEvent.get("topic_arg_1") ?? "") as StrHexHash,
-    ),
-    topicArg2: appendHexPrefix(
-      (rawPastEvent.get("topic_arg_2") ?? "") as StrHexHash,
-    ),
-    data: appendHexPrefix(rawPastEvent.get("data") as HexString),
-    transactionHash: appendHexPrefix(
-      rawPastEvent.get("transaction_hash") as StrHexHash,
-    ),
-    blockHash: appendHexPrefix(rawPastEvent.get("block_hash") as StrHexHash),
-    blockIndex: rawPastEvent.get("block_index") as number,
-  };
-}
 
 export async function getPastEvents(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
@@ -328,7 +228,7 @@ export async function getPastEvents(
   });
 
   return rawPastEvents.past_events.map((rawPastEvents) =>
-    toPastEvent(rawPastEvents),
+    toRpcPastEvent(rawPastEvents),
   );
 }
 
@@ -350,62 +250,15 @@ export async function getPastEventsByBlockRange(
   });
 
   return rawPastEvents.past_events.map((rawPastEvents) =>
-    toPastEvent(rawPastEvents),
+    toRpcPastEvent(rawPastEvents),
   );
-}
-
-function toLogEntry(rawLogEntryObject: object): RpcLogEntry {
-  const rawLogEntry = new Map(Object.entries(rawLogEntryObject));
-  const res = {
-    address: appendHexPrefix(rawLogEntry.get("address") as StrHexAddress),
-    topics: rawLogEntry.get("topics") as StrHexHash[],
-    data: appendHexPrefix(rawLogEntry.get("data") as HexString),
-  };
-
-  res.topics = res.topics.map((topic) => appendHexPrefix(topic));
-
-  return res;
-}
-
-function toTransactionReceipt(
-  rawTransactionReceiptObj: object,
-): RpcTransactionReceipt {
-  const rawTransactionReceipt = new Map(
-    Object.entries(rawTransactionReceiptObj),
-  );
-
-  return {
-    excepted: rawTransactionReceipt.get("excepted") as boolean,
-    blockHash: appendHexPrefix(
-      rawTransactionReceipt.get("block_hash") as StrHexHash,
-    ),
-    blockIndex: rawTransactionReceipt.get("block_index") as number,
-    transactionHash: appendHexPrefix(
-      rawTransactionReceipt.get("transaction_hash") as StrHexHash,
-    ),
-    transactionIndex: rawTransactionReceipt.get("transaction_index") as number,
-    senderAddress: appendHexPrefix(
-      rawTransactionReceipt.get("sender_address") as StrHexAddress,
-    ),
-    receiverAddress: appendHexPrefix(
-      rawTransactionReceipt.get("receiver_address") as StrHexAddress,
-    ),
-    newAddress: appendHexPrefix(
-      rawTransactionReceipt.get("new_address") as StrHexAddress,
-    ),
-    gasUsed: rawTransactionReceipt.get("gas_used") as AttoTol,
-    logs: (rawTransactionReceipt.get("logs") as object[]).map((rawLogEntry) =>
-      toLogEntry(rawLogEntry),
-    ),
-    exception: rawTransactionReceipt.get("exception") as number,
-  };
 }
 
 export async function getTransactionReceipt(
   requestManager: core.Web3RequestManager<TolarExecutionAPI>,
   transactionHash: StrHexHash,
 ): Promise<RpcTransactionReceipt> {
-  return toTransactionReceipt(
+  return toRpcTransactionReceipt(
     await requestManager.send({
       method: "tol_getTransactionReceipt",
       params: [removeHexPrefix(transactionHash)],
