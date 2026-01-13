@@ -7,6 +7,7 @@ Tolar web3 plugin workspace containing plugin and usage examples.
 - [Send signed transaction example](./packages/examples/send-signed-transaction)
 - [Smart contract example](./packages/examples/smart-contract)
 - [Wallet send transaction example](./packages/examples/wallet-send-transaction)
+- [Tolar Taquin Vue Example](./packages/examples/tolar-taquin)
 
 ## Prerequisites
 - [NodeJS](https://nodejs.org/) (LTS/Iron)

@@ -1,0 +1,26 @@
+{
+  "name": "tolar-taquin-example",
+  "description": "Using web3js with Tolar Taquin Wallet",
+  "homepage": "https://github.com/Tolar-HashNET/web3-plugin-tolar/packages/examples/tolar-taquin#readme",
+  "bugs": {
+    "url": "https://github.com/Tolar-HashNET/web3-plugin-tolar/issues"
+  },
+  "scripts": {
+    "lint": "../../../node_modules/.bin/eslint 'src/**/*.ts' --fix",
+    "build": "../../../node_modules/.bin/webpack",
+    "clean": "../../../node_modules/.bin/rimraf dist",
+    "dev": "../../../node_modules/.bin/webpack-dev-server --config=webpack.config.js"
+  },
+  "dependencies": {
+    "@tolar/web3-plugin-tolar": "workspace:^",
+    "ts-retry-promise": "^0.8.1",
+    "vue": "^3.5.27",
+    "web3": ">= 4.0.3",
+    "web3-eth-accounts": ">=4.0.3"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.5.27",
+    "typescript": "^5.9.3",
+    "vue-loader": "^17.4.2"
+  }
+}
