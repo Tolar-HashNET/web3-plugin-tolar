@@ -25,7 +25,7 @@ async function main() {
     const sender = tolarWallet[0].address;
     const receiver = tolarWallet[1].address;
 
-    const transactionHash = await web3.tolar.sedTransactionWithWallet({
+    const transactionHash = await web3.tolar.sendTransactionWithWallet({
       from: sender,
       to: receiver,
       value: 1000000000000000000n,

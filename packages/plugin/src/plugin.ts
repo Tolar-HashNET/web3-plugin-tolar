@@ -162,7 +162,7 @@ export class TolarPlugin extends Web3PluginBase<TolarExecutionAPI> {
     return _rpc.getPublicKey(this.requestManager);
   }
 
-  public async sedTransactionWithWallet(
+  public async sendTransactionWithWallet(
     transaction: Transaction,
   ): Promise<StrHexHash> {
     if (this._wallet === undefined) {

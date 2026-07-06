@@ -85,7 +85,7 @@ async function SendSignedTransaction() {
 
   const gasEstimate = await web3.tolar.getGasEstimate(contractTxRequest);
 
-  const txDeployHash = await web3.tolar.sedTransactionWithWallet({
+  const txDeployHash = await web3.tolar.sendTransactionWithWallet({
     from: contractTxRequest.senderAddress,
     to: ZERO_HEX_ADDRESS,
     value: contractTxRequest.amount,
@@ -108,7 +108,7 @@ async function SendSignedTransaction() {
   const nextNonce = BigInt(nonce) + 1n;
   nonce = nextNonce.toString();
 
-  const txExecuteMultiplyHash = await web3.tolar.sedTransactionWithWallet({
+  const txExecuteMultiplyHash = await web3.tolar.sendTransactionWithWallet({
     from: senderAddress,
     to: txDeployResponse.newAddress,
     value: 0n,
